@@ -19,9 +19,9 @@ from io import BytesIO
 auth = tweepy.OAuthHandler("djqF9ATn9TabaAGqJ6v4NvO40", "lzVGLc2b7pkrerCVtol9kbepGWec4JH97opY1DkRK6W6H5d8de")
 auth.set_access_token("1022124674623463424-0oIYTbhS0rGC2j7jmQqdg2n7Nsy5U9", "yEPSAcJkzJsKMVnhpfm2eqPTo54MoZyTJlm4SwZgUG067")
 api = tweepy.API(auth)
-myFile = open('Twitter_Sayings.txt', 'w', encoding="utf-8")
 
-userImage = input("Enter and image url: ")
+
+userImage = input("Enter an image url: ")
 userTranslateLanguage = input("Enter a number that corresponds to the language you'd like the output to be translated to - [1] Spanish, [2] Japanese, [3] French, [4] Italian, [5] German, [6] English: ")
 
 
@@ -44,6 +44,7 @@ transLang = userTranslateLanguage[0:2]
 response = requests.get(userImage)
 img = Image.open(BytesIO(response.content))
 img.save("temp.jpg", "JPEG")
+myFile = open('Twitter_Sayings.txt', 'w', encoding="utf-8")
 
 
 def translateStuff(targetLanguage, text):
@@ -51,7 +52,7 @@ def translateStuff(targetLanguage, text):
     translate_client = translate.Client()
     translation = translate_client.translate(text, target_language = targetLanguage)
     translatedText = translation["translatedText"]
-    myFile.write(" Translation: " + translatedText)
+    myFile.write(" (Translation: " + translatedText + ")")
 
 def labelsUrl(uri):
     """Detects labels in the file located in Google Cloud Storage or on the
@@ -65,7 +66,7 @@ def labelsUrl(uri):
     print('Labels:')
 
     for label in labels:
-        myFile.write(label.description)
+        myFile.write("\n" + label.description)
         translateStuff(transLang, label.description)
         break
 
@@ -83,11 +84,22 @@ def searchFace(uri):
     print('Faces:')
 
     for face in faces:
-        myFile.write('anger: {}'.format(chances[face.anger_likelihood]))
-        myFile.write('joy: {}'.format(chances[face.joy_likelihood]))
-        myFile.write('surprise: {}'.format(chances[face.surprise_likelihood]))
-        myFile.write('sorrow: {}'.format(chances[face.sorrow_likelihood]))
-        myFile.write('headwear: {}'.format(chances[face.headwear_likelihood]))
+        myFile.write("\n" + 'anger: {}'.format(chances[face.anger_likelihood]))
+        translateStuff(transLang, ('anger: {}'.format(chances[face.anger_likelihood])))
+
+        myFile.write("\n" + 'joy: {}'.format(chances[face.joy_likelihood]))
+        translateStuff(transLang, ('joy: {}'.format(chances[face.joy_likelihood])))
+
+        myFile.write("\n" + 'surprise: {}'.format(chances[face.surprise_likelihood]))
+        translateStuff(transLang, ('surprise: {}'.format(chances[face.surprise_likelihood])))
+
+        myFile.write("\n" + 'sorrow: {}'.format(chances[face.sorrow_likelihood]))
+        translateStuff(transLang, ('sorrow: {}'.format(chances[face.sorrow_likelihood])))
+
+        myFile.write("\n" + 'headwear: {}'.format(chances[face.headwear_likelihood]))
+        translateStuff(transLang, ('headwear: {}'.format(chances[face.headwear_likelihood])))
+        
+        break;
 
 def searchLandmark(uri):
     client = vision.ImageAnnotatorClient()
@@ -97,7 +109,9 @@ def searchLandmark(uri):
     response = client.landmark_detection(image=image)
     landmarks = response.landmark_annotations
     for landmark in landmarks:
-        myFile.write("The landmark is: " + landmark.description)
+        myFile.write("\nThe landmark is: " + landmark.description)
+        translateStuff(transLang, landmark.description)
+        break;
         
 
 
@@ -118,6 +132,7 @@ def searchLogos(uri):
     for logo in logos:
         myFile.write("\n" + logo.description)
         translateStuff(transLang, logo.description)
+        break;
 
 def searchText(uri):
 
@@ -138,27 +153,44 @@ def searchText(uri):
     for text in texts:
         myFile.write("\n" + text.description)
         translateStuff(transLang, text.description)
+        break;
 
 
-labelsUrl(userImage)
-searchFace(userImage)
-searchLandmark(userImage)
-searchLogos(userImage)
-searchText(userImage)
+def runProgram(runLabel = "1", runFace = "0", runLandmark = "0", runLogos = "0", runText = "0"):
+    if runLabel == "1":
+        labelsUrl(userImage)
+    
+    if runFace == "1":
+        searchFace(userImage)
+    
+    if runLandmark == "1":
+        searchLandmark(userImage)
+    
+    if runLogos == "1":
+        searchLogos(userImage)
+    
+    if runText == "1":
+        searchText(userImage)
+
+
+runProgram(runLabel="1", runLandmark="0", runLogos="0", runText="1", runFace="0")
+
 
 myFile.close()
 myFile2 = open('Twitter_Sayings.txt', 'r', encoding="utf-8")
 
+newline = "\n"
 fileLines = myFile2.readlines()
+newLines = []
+for line in fileLines:
+    print(line)
+    line1 = line.replace("\n", "")
+    if line1 != "":
+        newLines.append(line1)
 
+print(newLines)
+def tweetStuff(newLines):
+    api.update_with_media('temp.jpg', newLines) 
 
-print(fileLines)
-
-def tweetStuff():
-    # for line in fileLines:
-    #     api.update_status(line)
-        
-    api.update_with_media('temp.jpg', fileLines) 
-
-tweetStuff()
+tweetStuff(newLines)
 myFile2.close()
