@@ -1,1 +1,4 @@
-beach Translation: beach
+
+fruit (Translation: frutta)
+This is an apple
+ (Translation: Questa è una mela)
