@@ -79,25 +79,20 @@ def searchFace(uri):
     faces = response.face_annotations
 
     # Names of likelihood from google.cloud.vision.enums
-    chances = ('UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE',
-                       'LIKELY', 'VERY_LIKELY')
+    chances = ('UNKNOWN', 'VERY UNLIKELY', 'UNLIKELY', 'POSSIBLE',
+                       'LIKELY', 'VERY LIKELY')
     print('Faces:')
 
     for face in faces:
         myFile.write("\n" + 'anger: {}'.format(chances[face.anger_likelihood]))
-        translateStuff(transLang, ('anger: {}'.format(chances[face.anger_likelihood])))
 
         myFile.write("\n" + 'joy: {}'.format(chances[face.joy_likelihood]))
-        translateStuff(transLang, ('joy: {}'.format(chances[face.joy_likelihood])))
 
         myFile.write("\n" + 'surprise: {}'.format(chances[face.surprise_likelihood]))
-        translateStuff(transLang, ('surprise: {}'.format(chances[face.surprise_likelihood])))
 
         myFile.write("\n" + 'sorrow: {}'.format(chances[face.sorrow_likelihood]))
-        translateStuff(transLang, ('sorrow: {}'.format(chances[face.sorrow_likelihood])))
 
         myFile.write("\n" + 'headwear: {}'.format(chances[face.headwear_likelihood]))
-        translateStuff(transLang, ('headwear: {}'.format(chances[face.headwear_likelihood])))
         
         break;
 
@@ -173,7 +168,7 @@ def runProgram(runLabel = "1", runFace = "0", runLandmark = "0", runLogos = "0",
         searchText(userImage)
 
 
-runProgram(runLabel="1", runLandmark="0", runLogos="0", runText="1", runFace="0")
+runProgram(runLabel="1", runLandmark="1", runLogos="0", runText="0", runFace="0")
 
 
 myFile.close()
