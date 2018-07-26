@@ -25,7 +25,7 @@ langModel = {
 }
 
 
-with open("C:\\Users\\jfhaw\\OneDrive\\Desktop\\vision-cssi\\whitefang.txt", "r") as f:
+with open("PATH TO TEXT FILE", "r") as f:
     global corpus
     text = f.read()
     tokenizer = RegexpTokenizer(r'\w+')
