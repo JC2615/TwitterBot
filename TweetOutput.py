@@ -16,14 +16,13 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-auth = tweepy.OAuthHandler("YOUR_KEY", "YOUR_SECRET")
-auth.set_access_token("YOUR_TOKEN", "YOUR_SECRET")
+auth = tweepy.OAuthHandler("djqF9ATn9TabaAGqJ6v4NvO40", "lzVGLc2b7pkrerCVtol9kbepGWec4JH97opY1DkRK6W6H5d8de")
+auth.set_access_token("1022124674623463424-0oIYTbhS0rGC2j7jmQqdg2n7Nsy5U9", "yEPSAcJkzJsKMVnhpfm2eqPTo54MoZyTJlm4SwZgUG067")
 api = tweepy.API(auth)
 
 
 userImage = input("Enter an image url: ")
-userTranslateLanguage = input("Enter a number that corresponds to the language you'd like the output to be translated to - [1] Spanish, [2] Japanese, [3] French, [4] Italian, [5] German, [6] English: ")
-
+userTranslateLanguage = input("Enter a number that corresponds to the language you'd like the output to be translated to - [1] Spanish, [2] Japanese, [3] Arabic, [4] Russian, [5] German, [6] English: ")
 
 
 if userTranslateLanguage == "1":
@@ -31,13 +30,11 @@ if userTranslateLanguage == "1":
 elif userTranslateLanguage == "2":
     userTranslateLanguage = "ja-JP"
 elif userTranslateLanguage == "3":
-    userTranslateLanguage = "fr-FR"
+    userTranslateLanguage = "ar-AE"
 elif userTranslateLanguage == "4":
-    userTranslateLanguage = "it-IT"
+    userTranslateLanguage = "ru-RU"
 elif userTranslateLanguage == "5":
     userTranslateLanguage = "de-DE"
-elif userTranslateLanguage == "6":
-    userTranslateLanguage = "en-US"
 
 transLang = userTranslateLanguage[0:2]
 
@@ -45,7 +42,6 @@ response = requests.get(userImage)
 img = Image.open(BytesIO(response.content))
 img.save("temp.jpg", "JPEG")
 myFile = open('Twitter_Sayings.txt', 'w', encoding="utf-8")
-
 
 def translateStuff(targetLanguage, text):
     global userTranslateLanguage
@@ -57,6 +53,7 @@ def translateStuff(targetLanguage, text):
 def labelsUrl(uri):
     """Detects labels in the file located in Google Cloud Storage or on the
     Web."""
+    counter = 0
     client = vision.ImageAnnotatorClient()
     image = types.Image()
     image.source.image_uri = uri
@@ -68,7 +65,9 @@ def labelsUrl(uri):
     for label in labels:
         myFile.write("\n" + label.description)
         translateStuff(transLang, label.description)
-        break
+        counter += 1
+        if counter == 3:
+            break
 
 def searchFace(uri):
     client = vision.ImageAnnotatorClient()
@@ -88,13 +87,8 @@ def searchFace(uri):
 
         myFile.write("\n" + 'joy: {}'.format(chances[face.joy_likelihood]))
 
-        myFile.write("\n" + 'surprise: {}'.format(chances[face.surprise_likelihood]))
-
         myFile.write("\n" + 'sorrow: {}'.format(chances[face.sorrow_likelihood]))
-
-        myFile.write("\n" + 'headwear: {}'.format(chances[face.headwear_likelihood]))
-        
-        break;
+        break
 
 def searchLandmark(uri):
     client = vision.ImageAnnotatorClient()
@@ -105,11 +99,8 @@ def searchLandmark(uri):
     landmarks = response.landmark_annotations
     for landmark in landmarks:
         myFile.write("\nThe landmark is: " + landmark.description)
-        translateStuff(transLang, landmark.description)
-        break;
+        break
         
-
-
 def searchLogos(uri):
     # Instantiates a client
     translate_client = translate.Client()
@@ -127,7 +118,7 @@ def searchLogos(uri):
     for logo in logos:
         myFile.write("\n" + logo.description)
         translateStuff(transLang, logo.description)
-        break;
+        break
 
 def searchText(uri):
 
@@ -148,8 +139,8 @@ def searchText(uri):
     for text in texts:
         myFile.write("\n" + text.description)
         translateStuff(transLang, text.description)
-        break;
-
+        break
+        
 
 def runProgram(runLabel = "1", runFace = "0", runLandmark = "0", runLogos = "0", runText = "0"):
     if runLabel == "1":
@@ -168,8 +159,7 @@ def runProgram(runLabel = "1", runFace = "0", runLandmark = "0", runLogos = "0",
         searchText(userImage)
 
 
-runProgram(runLabel="1", runLandmark="1", runLogos="0", runText="0", runFace="0")
-
+runProgram(runLabel="0", runLandmark="0", runLogos="0", runText="0", runFace="0")
 
 myFile.close()
 myFile2 = open('Twitter_Sayings.txt', 'r', encoding="utf-8")
