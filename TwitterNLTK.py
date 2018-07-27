@@ -25,7 +25,7 @@ langModel = {
 }
 
 #opens a text file and then tokenizes the entire text, this excludes punctuation
-with open("C:\\Users\\jfhaw\\OneDrive\\Desktop\\vision-cssi\\whitefang.txt", "r", encoding ='utf-8') as f:
+with open("whitefang.txt", "r", encoding ='utf-8') as f:
     global corpus
     text = f.read()
     tokenizer = RegexpTokenizer(r'\w+')

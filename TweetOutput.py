@@ -159,7 +159,7 @@ def runProgram(runLabel = "1", runFace = "0", runLandmark = "0", runLogos = "0",
         searchText(userImage)
 
 
-runProgram(runLabel="0", runLandmark="0", runLogos="0", runText="0", runFace="0")
+runProgram(runLabel="1", runLandmark="0", runLogos="0", runText="0", runFace="0")
 
 myFile.close()
 myFile2 = open('Twitter_Sayings.txt', 'r', encoding="utf-8")
