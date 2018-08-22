@@ -13,7 +13,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 count = 0
-for tweet in tweepy.Cursor(api.search, q='#corgi').items():
+for tweet in tweepy.Cursor(api.search, q='#backpack').items():
   
     try:
         # Add \n escape character to print() to organize tweets
