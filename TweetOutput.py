@@ -16,8 +16,8 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-auth = tweepy.OAuthHandler("djqF9ATn9TabaAGqJ6v4NvO40", "lzVGLc2b7pkrerCVtol9kbepGWec4JH97opY1DkRK6W6H5d8de")
-auth.set_access_token("1022124674623463424-0oIYTbhS0rGC2j7jmQqdg2n7Nsy5U9", "yEPSAcJkzJsKMVnhpfm2eqPTo54MoZyTJlm4SwZgUG067")
+auth = tweepy.OAuthHandler(YOUR_KEY, YOUR_SECRET)
+auth.set_access_token(YOUR_TOKEN, YOUR_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 
